@@ -1,0 +1,29 @@
+<assembly
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>jar-with-dependencies</id>
+    <!-- 打包文件为.jar -->
+    <formats>
+        <format>jar</format>
+    </formats>
+    <!-- 打包的文件夹中是否包含项目名 -->
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <!-- 依赖的jar包导入到哪个目录 -->
+    <dependencySets>
+        <dependencySet>
+        	<!-- 不使用项目的artifact -->
+            <useProjectArtifact>false</useProjectArtifact>
+            <!-- 依赖jar包存放位置 -->
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+        	<!-- 项目文件中需打包的文件夹 -->
+            <directory>${project.build.outputDirectory}</directory>
+            <!-- 项目文件中需打包的文件夹存放位置 -->
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>
