@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Hello World!</title>
+        <link rel="stylesheet" href="css/main.css" type="text/css" />
+    </head>
+    <body>
+        <h1 th:inline="text">Hello Spring Boot!</h1>
+        <p th:text="${hello}"></p>
+        <p th:text="${#dates.format(#dates.createNow(), 'yyyy/MM/dd HH:mm:ss')}" class="test">asd</p>
+    </body>
+</html>
