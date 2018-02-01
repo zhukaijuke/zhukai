@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    					http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+    <dubbo:application name="${dubbo.app.name}"  />
+  
+    <!-- 使用multicast广播注册中心暴露服务地址 -->
+	<!-- <dubbo:registry address="multicast://224.5.6.7:1234" /> -->
+    
+    <!-- 使用zookeeper注册中心暴露服务地址 --> 
+    <dubbo:registry id="registry" address="${dubbo.registry.address}" register="${dubbo.register.flag}" /> 
+     
+    <!-- 如果需要在多个zk注册中心暴露服务, 可配置多个zookeeper注册中心暴露服务地址
+    <dubbo:registry id="otherRegistry" address="${dubbo.registry.address.other}" register="${dubbo.register.flag}" default="false" /> -->
+ 
+	<!-- 用dubbo协议在20880端口暴露服务 -->
+	<dubbo:protocol id="dubbo" name="dubbo" port="${dubbo.app.port}" />
+	
+	<!-- dubbo:service 的默认配置,可选 -->
+	<dubbo:provider protocol="dubbo" default="true" timeout="350000" />
+	
+    <!-- dubbo:reference 的默认配置,可选 -->
+	<dubbo:consumer check="true" cluster="failfast" timeout="350000"/>
+	
+	<!-- 监控中心配置，用于配置连接监控中心相关信息,可选
+    <dubbo:monitor address="${dubbo.monitor.address}"/> -->
+	
+	<!--生成远程服务代理，可以和本地bean一样使用demoManager-->
+	<!-- <dubbo:reference id="demoManager" interface="com.zhukai.manager.DemoManager" cluster="failfast" /> -->
+	
+	<dubbo:service ref="userManager" interface="com.zhukai.manager.UserManager" />
+	
+</beans>

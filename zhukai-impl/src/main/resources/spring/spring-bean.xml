@@ -14,7 +14,7 @@
 	<context:annotation-config />
 	
 	<!-- 获取zk当中的节点配置,和ext.properties中的配置
-		如果overrideLocaltions中读取的配置和locations当中的配置相同, 则覆盖 -->
+		如果ext.properties中读取的配置和zk当中的配置相同, 则覆盖 -->
 	<bean class="com.zhukai.common.PropertiesConfig">
 		<property name="locations">
 			<list>
@@ -28,6 +28,18 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!-- i18n资源配置文件读取
+		配置文件的命名需要带上语言种类的即：文件名_语言种类.properties 
+		例如:messages_zh.properties和messages_en.properties就表示中文和英语
+		通过MessageSource.getMessage(String arg0, Object[] arg1, Locale arg2)获取配置的值 -->
+	<!-- <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>i18n/messages</value>
+            </list>
+        </property>
+    </bean> -->
 	
 	<!-- 使用注解标注组件和注入 -->
 	<context:component-scan base-package="com.zhukai" />

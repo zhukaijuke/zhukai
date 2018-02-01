@@ -85,6 +85,7 @@ public class PropertiesConfig extends PropertyPlaceholderConfigurer implements W
 		// 保存到静态属性中，供其它非spring托管理的类获取配置信息
 		saveProperties(zkprops);
 		// 与spring进行结合
+		// 访问每个bean定义的bean工厂，试图取代$ {…}属性占位符值从给定的属性。
 		super.processProperties(beanFactoryToProcess, zkprops);
 	}
 

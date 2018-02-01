@@ -9,5 +9,11 @@
         <h1 th:inline="text">Hello Spring Boot!</h1>
         <p th:text="${hello}"></p>
         <p th:text="${#dates.format(#dates.createNow(), 'yyyy/MM/dd HH:mm:ss')}" class="test">asd</p>
+        <p>调用dubbo服务test</p>
+        <p th:text="${user.userName}"></p>
+        <p th:text="${user.email}"></p>
+        <p th:text="${user.phone}"></p>
+        <p th:text="${#dates.format(user.createTime, 'yyyy/MM/dd HH:mm:ss')}"></p>
+        <p th:text="${user.remark}"></p>
     </body>
 </html>

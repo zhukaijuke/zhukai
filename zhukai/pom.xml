@@ -64,6 +64,52 @@
 			<artifactId>jstl</artifactId>
 		</dependency>
 		
+		<!-- spring-boot项目使用下面spring-boot-starter-dubbo包结合注解和application.properties配置方式来使用dubbo服务-->
+		<dependency>
+		    <groupId>com.gitee.reger</groupId>
+		    <artifactId>spring-boot-starter-dubbo</artifactId>
+		    <version>1.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.11</version>
+		</dependency>
+		
+		
+		<!-- 按下面的方式引入dubbo.xml和相关配置也可以使用dubbo服务, 
+			为了更好融合springboot的理念结合注解和application.properties配置方式来使用dubbo服务, 因此使用上面的方式 -->
+		<!-- <dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.5.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.11</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.1</version>
+		</dependency> -->
 	</dependencies>
 
 	<build>
