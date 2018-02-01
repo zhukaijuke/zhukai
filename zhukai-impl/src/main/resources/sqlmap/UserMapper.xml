@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhukai.dao.UserDao">
+	<resultMap id="UserResult" type="com.zhukai.model.User">
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="userColumns">
+       	id as id,
+       	login_name as loginName,
+       	user_name as userName,
+       	password as password,
+       	email as email,
+       	phone as phone,
+       	create_time as createTime,
+       	last_login_time as lastLoginTime,
+       	last_modify_time as lastModifyTime,
+       	life_cycle as lifeCycle,
+       	remark as remark
+	</sql>
+	
+	<insert id="insert" parameterType="com.zhukai.model.User" 
+		useGeneratedKeys="true" keyProperty="id" flushCache="true">
+		insert into
+		common_user (
+        	login_name ,
+        	user_name ,
+        	password ,
+        	email ,
+        	phone ,
+        	create_time ,
+        	last_login_time ,
+        	last_modify_time ,
+        	lifecycle ,
+        	remark
+        ) VALUES (
+        	#{loginName,javaType=java.lang.String,jdbcType=VARCHAR} ,
+        	#{userName,javaType=java.lang.String,jdbcType=VARCHAR} ,
+        	#{password,javaType=java.lang.String,jdbcType=VARCHAR} ,
+        	#{email,javaType=java.lang.Integer,jdbcType=INTEGER} ,
+        	#{phone,javaType=java.lang.String,jdbcType=VARCHAR} ,
+        	#{createTime,javaType=java.util.Date,jdbcType=TIMESTAMP} ,
+        	#{lastLoginTime,javaType=java.util.Date,jdbcType=TIMESTAMP} ,
+        	#{lastModifyTime,javaType=java.util.Date,jdbcType=TIMESTAMP} ,
+        	#{lifecycle,javaType=java.lang.Integer,jdbcType=INTEGER} ,
+        	#{remark,javaType=java.lang.String,jdbcType=VARCHAR} 
+        )
+	</insert>
+	
+	<select id="checkUserByUserName" resultType="int">
+		select
+			count(1)
+		from
+			common_user
+		where
+			userName = #{userName}
+	</select>
+	
+	<select id="findUserByUserNameAndPassword" resultMap="UserResult">
+		select
+			<include refid="userColumns" />
+		from
+			common_user
+		where
+			user_name = #{userName}
+			and password = #{password}
+	</select>
+</mapper>

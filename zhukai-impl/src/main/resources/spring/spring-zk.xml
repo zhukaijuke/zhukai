@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 更改序列化方式  -->
+	<bean id="zkSerializer" class="com.zhukai.common.zk.ZkSerializerImpl"></bean>
+	
+	<!-- zk data listener -->
+ 	<bean id="iZkDataListener" class="com.zhukai.common.zk.IZkDataListenerImpl"></bean>
+ 	
+ 	<!-- zk state listener -->
+ 	<bean id="iZkStateListener" class="com.zhukai.common.zk.IZkStateListenerImpl"></bean>
+ 	
+ 	<!-- zk child listener -->
+ 	<bean id="iZkChildListener" class="com.zhukai.common.zk.IZkChildListenerImpl"></bean>
+ 	
+	<!-- 以上为标准配置 -->
+ 	<!-- 以下为项目定制化配置 -->
+ 	<!-- zk客户端  必须配置-->
+ 	<bean id="zkClient" class="org.I0Itec.zkclient.ZkClient">
+		<constructor-arg index="0" value="${zk.host}" ></constructor-arg>
+		<constructor-arg index="1" value="${zk.session.timeout}" ></constructor-arg>
+		<constructor-arg index="2" value="${zk.connection.timeout}"></constructor-arg>
+		<constructor-arg index="3" ref="zkSerializer"></constructor-arg>
+	</bean>
+	
+	<bean class="com.zhukai.common.zk.ZkClientInit" init-method="init">
+		<property name="dataChangePathList">
+			<list>
+				<value>${zk.log.change.path}</value>
+			</list>
+		</property>
+		<property name="isSubscribeStateChanges" value="false" />
+	</bean>
+</beans>

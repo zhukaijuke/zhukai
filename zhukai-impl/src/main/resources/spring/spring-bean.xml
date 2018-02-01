@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<aop:aspectj-autoproxy />
+	<context:annotation-config />
+	
+	<!-- 获取zk当中的节点配置,和ext.properties中的配置
+		如果overrideLocaltions中读取的配置和locations当中的配置相同, 则覆盖 -->
+	<bean class="com.zhukai.common.PropertiesConfig">
+		<property name="locations">
+			<list>
+				<value>classpath:zk.properties</value>
+			</list>
+		</property>
+		<!-- 重写zookeeper中的配置 -->
+		<property name="overrideLocaltions">
+			<list>
+				<value>classpath:ext.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 使用注解标注组件和注入 -->
+	<context:component-scan base-package="com.zhukai" />
+	
+</beans>
