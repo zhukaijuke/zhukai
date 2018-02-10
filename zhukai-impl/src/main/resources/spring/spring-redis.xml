@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="redisconfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property  name="maxTotal" >
+			<value type="long">${redis.maxTotal}</value>
+		</property>
+		<property  name="maxIdle" >
+			<value type="long">${redis.maxIdle}</value>
+		</property>
+		<property  name="minIdle">
+			<value type="long">${redis.minIdle}</value>
+		</property>
+		<property name="testOnBorrow">
+			<value type="boolean">true</value>
+		</property>
+	</bean>
+	
+	<bean id="jedisSentinelPool" class="redis.clients.jedis.JedisSentinelPool">
+		<constructor-arg index="0">
+			<value>${redis.mastername}</value>
+		</constructor-arg>
+			 
+		<constructor-arg index="1" type="java.util.Set">
+			<set>
+				<value>${redis.sentinel1}</value>
+				<!-- <value>${redis.sentinel2}</value>
+				<value>${redis.sentinel3}</value> -->
+			</set>
+		</constructor-arg>
+ 			
+		<constructor-arg index="2" ref="redisconfig" />
+		<constructor-arg index="3" value="123456" />
+	</bean>
+	
+	<bean id="cacheManager" class="com.zhukai.common.redis.CacheManagerImpl">
+		<property name="jedisPool" ref="jedisSentinelPool" />
+	</bean>
+	
+</beans>

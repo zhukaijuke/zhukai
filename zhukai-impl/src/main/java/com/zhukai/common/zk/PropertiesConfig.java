@@ -1,4 +1,4 @@
-package com.zhukai.common;
+package com.zhukai.common.zk;
 
 import java.util.Enumeration;
 import java.util.List;
@@ -15,9 +15,6 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-
-import com.zhukai.common.zk.IZkStateListenerImpl;
-import com.zhukai.common.zk.ZkSerializerImpl;
 
 public class PropertiesConfig extends PropertyPlaceholderConfigurer implements Watcher {
 

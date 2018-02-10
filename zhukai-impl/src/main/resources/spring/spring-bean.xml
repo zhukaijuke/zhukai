@@ -15,7 +15,7 @@
 	
 	<!-- 获取zk当中的节点配置,和ext.properties中的配置
 		如果ext.properties中读取的配置和zk当中的配置相同, 则覆盖 -->
-	<bean class="com.zhukai.common.PropertiesConfig">
+	<bean class="com.zhukai.common.zk.PropertiesConfig">
 		<property name="locations">
 			<list>
 				<value>classpath:zk.properties</value>
