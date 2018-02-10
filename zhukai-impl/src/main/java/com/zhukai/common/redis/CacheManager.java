@@ -376,7 +376,7 @@ public interface CacheManager {
 	 * @param keyPattern
 	 * @return
 	 */
-	public boolean remonKeys(String keyPattern);
+	public boolean removeValueByKeys(String keyPattern);
 	
 	
 	/**

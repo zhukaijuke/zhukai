@@ -95,7 +95,7 @@ public class CacheManagerImpl implements CacheManager {
 		return list;
 	}
 
-	public boolean remonKeys(String keyPattern) {
+	public boolean removeValueByKeys(String keyPattern) {
 
 		/**
 		 * 如果用户传递的表达式为*,则直接返回空串
