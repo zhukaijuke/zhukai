@@ -39,7 +39,7 @@
     <!-- 事务管理驱动 -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 	
-	<!-- 自动扫描 org.java.mapper包下面的文件   对所有的Mapper接口实现代理  -->
+	<!-- 自动扫描 com.zhukai.dao包下面的文件   对所有的dao接口实现代理  -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.zhukai.dao" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
