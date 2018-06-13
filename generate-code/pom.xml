@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.zhukai</groupId>
+	<artifactId>generate-code</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<description>生成代码</description>
+
+<properties>
+        <migo-version>1.0.2</migo-version>
+        <java-version>1.8</java-version>
+        <servlet-version>3.1.0</servlet-version>
+        <junit-version>4.12</junit-version>
+        <springframework-version>4.3.7.RELEASE</springframework-version>
+        <mybatis-version>3.4.1</mybatis-version>
+        <mybatis-spring-version>1.3.0</mybatis-spring-version>
+        <mysql-version>5.1.38</mysql-version>
+        <hibernate-validator-version>5.4.1.Final</hibernate-validator-version>
+        <druid-version>1.0.28</druid-version>
+        <commons-lang-version>2.6</commons-lang-version>
+        <commons-fileupload-version>1.3.1</commons-fileupload-version>
+        <commons-io-version>2.5</commons-io-version>
+        <commons-codec-version>1.10</commons-codec-version>
+        <commons-configuration-version>1.10</commons-configuration-version>
+        <slf4j-version>1.7.19</slf4j-version>
+        <log4j-version>1.2.17</log4j-version>
+        <fastjson-version>1.2.31</fastjson-version>
+        <shiro-version>1.3.2</shiro-version>
+        <kaptcha-version>0.0.9</kaptcha-version>
+        <velocity-version>1.7</velocity-version>
+        <velocity-tools-version>2.0</velocity-tools-version>
+        <jstl-version>1.2</jstl-version>
+        <taglibs-version>1.1.2</taglibs-version>
+        <freemarker-version>2.3.23</freemarker-version>
+    </properties>
+    
+	<dependencies>
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${springframework-version}</version>
+        </dependency>
+		<dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${mybatis-spring-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>velocity</artifactId>
+            <groupId>org.apache.velocity</groupId>
+            <version>${velocity-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>${velocity-tools-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>${commons-configuration-version}</version>
+        </dependency>
+        <!-- Freemarker视图所需jar -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker-version}</version>
+        </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
