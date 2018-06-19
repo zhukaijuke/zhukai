@@ -17,30 +17,30 @@
 
 package com.zhukai.utils;
 
-import com.zhukai.entity.ColumnEntity;
-import com.zhukai.entity.TableEntity;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.*;
+import com.zhukai.entity.ColumnEntity;
+import com.zhukai.entity.TableEntity;
 
 /**
  * 代码生成器   工具类
  *
- * @author 知秋
- * @email fei6751803@163.com
  */
 public class GenUtils {
 
@@ -125,26 +125,43 @@ public class GenUtils {
         map.put("email", config.getString("email"));
         map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
         VelocityContext context = new VelocityContext(map);
-        OutputStream out = null;
+        // OutputStream out = null;
         //获取模板列表
         List<String> templates = getTemplates();
+        String rootPath = GenUtils.class.getClassLoader().getResource("").getFile() + "../../java_src/";
         for(String template : templates){
             //渲染模板
-            StringWriter sw = new StringWriter();
-            Template tpl = Velocity.getTemplate(template, "UTF-8");
-            tpl.merge(context, sw);
-            File file = new File(getFileName(template, tableEntity.getClassName(), config.getString("package")));
+        	PrintWriter writer = null;
             try {
-            	out = new FileOutputStream(file);
-                IOUtils.write(sw.toString(), out, "UTF-8");
-                IOUtils.closeQuietly(sw);
-                out.close();
-            } catch (IOException e) {
-                throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
-            }
+            	// 新创建的文件目录
+            	String filePath = rootPath + getFileName(template, tableEntity.getClassName(), config.getString("package"));
+            	File file = new File(filePath);
+            	// 检查文件目录是否存在, 不存在则创建
+            	checkParentFileExists(file);
+				writer = new PrintWriter(file);
+				Template tpl = Velocity.getTemplate(template, "UTF-8");
+	            tpl.merge(context, writer);
+				writer.flush();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
+			} finally {
+				writer.close();
+			}
         }
     }
-
+    
+    /**
+     * 检查文件目录是否存在, 不存在则创建
+     */
+    private static void checkParentFileExists(File file) {
+    	if (!file.getParentFile().exists()) {
+            boolean result = file.getParentFile().mkdirs();  
+            if (!result) {  
+                throw new RuntimeException("创建文件夹失败:" + file.getPath());
+            }  
+        }
+    }
 
     /**
      * 列名转换成Java属性名
@@ -178,13 +195,13 @@ public class GenUtils {
      * 获取文件名
      */
     public static String getFileName(String template, String className, String packageName){
-        String packagePath = "main" + File.separator + "java" + File.separator;
+        String packagePath = "";
         if(StringUtils.isNotBlank(packageName)){
             packagePath += packageName.replace(".", File.separator) + File.separator;
         }
 
         if(template.contains("Entity.java.vm")){
-            return packagePath + "entity" + File.separator + className + "Entity.java";
+            return packagePath + "entity" + File.separator + className + ".java";
         }
 
         if(template.contains("Dao.java.vm")){
@@ -192,7 +209,7 @@ public class GenUtils {
         }
 
         if(template.contains("Dao.xml.vm")){
-            return packagePath + "dao" + File.separator + className + "Dao.xml";
+            return packagePath + "sqlmap" + File.separator + className + "Dao.xml";
         }
 
         if(template.contains("Service.java.vm")){
@@ -209,11 +226,11 @@ public class GenUtils {
 
         if(template.contains("list.html.vm")){
             return "main" + File.separator + "webapp" + File.separator + "WEB-INF" + File.separator + "page"
-                    + File.separator + "generator" + File.separator + className.toLowerCase() + ".html";
+                    + File.separator + className.toLowerCase() + ".html";
         }
 
         if(template.contains("list.js.vm")){
-            return "main" + File.separator + "webapp" + File.separator + "js" + File.separator + "generator" + File.separator + className.toLowerCase() + ".js";
+            return "main" + File.separator + "webapp" + File.separator + "js" + File.separator + className.toLowerCase() + ".js";
         }
 
         if(template.contains("menu.sql.vm")){
