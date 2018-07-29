@@ -47,14 +47,16 @@ public class GenUtils {
     public static List<String> getTemplates(){
         List<String> templates = new ArrayList<String>();
         templates.add("template/velocity/Entity.java.vm");
-        templates.add("template/velocity/Dao.java.vm");
-        templates.add("template/velocity/Dao.xml.vm");
+        templates.add("template/velocity/Mapper.xml.vm");
+        templates.add("template/velocity/Mapper.java.vm");
         templates.add("template/velocity/Service.java.vm");
         templates.add("template/velocity/ServiceImpl.java.vm");
-        templates.add("template/velocity/Controller.java.vm");
         templates.add("template/velocity/list.html.vm");
         templates.add("template/velocity/list.js.vm");
-        templates.add("template/velocity/menu.sql.vm");
+        templates.add("template/velocity/Controller.java.vm");
+        // templates.add("template/velocity/menu.sql.vm");
+        // templates.add("template/velocity/Dao.java.vm");
+        // templates.add("template/velocity/Dao.xml.vm");
         return templates;
     }
 
@@ -74,6 +76,8 @@ public class GenUtils {
         tableEntity.setClassName(className);
         tableEntity.setClassname(StringUtils.uncapitalize(className));
 
+        boolean hasBigDecimal = false;
+        boolean hasData = false;
         //列信息
         List<ColumnEntity> columsList = new ArrayList<>();
         for(Map<String, String> column : columns){
@@ -91,7 +95,11 @@ public class GenUtils {
             //列的数据类型，转换成Java类型
             String attrType = config.getString(columnEntity.getDataType(), "unknowType");
             columnEntity.setAttrType(attrType);
-
+            if ("BigDecimal".equals(attrType)) {
+            	hasBigDecimal = true;
+			} else if ("Date".equals(attrType)) {
+				hasData = true;
+			}
             //是否主键
             if("PRI".equalsIgnoreCase(column.get("columnKey")) && tableEntity.getPk() == null){
                 tableEntity.setPk(columnEntity);
@@ -110,7 +118,7 @@ public class GenUtils {
         Properties prop = new Properties();
         prop.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         Velocity.init(prop);
-
+        
         //封装模板数据
         Map<String, Object> map = new HashMap<>();
         map.put("tableName", tableEntity.getTableName());
@@ -124,6 +132,8 @@ public class GenUtils {
         map.put("author", config.getString("author"));
         map.put("email", config.getString("email"));
         map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
+        map.put("hasBigDecimal", hasBigDecimal);
+        map.put("hasData", hasData);
         VelocityContext context = new VelocityContext(map);
         // OutputStream out = null;
         //获取模板列表
@@ -134,7 +144,8 @@ public class GenUtils {
         	PrintWriter writer = null;
             try {
             	// 新创建的文件目录
-            	String filePath = rootPath + getFileName(template, tableEntity.getClassName(), config.getString("package"));
+            	String fileName = getFileName(template, tableEntity.getClassName(), config.getString("package"));
+            	String filePath = rootPath + fileName;
             	File file = new File(filePath);
             	// 检查文件目录是否存在, 不存在则创建
             	checkParentFileExists(file);
@@ -142,6 +153,7 @@ public class GenUtils {
 				Template tpl = Velocity.getTemplate(template, "UTF-8");
 	            tpl.merge(context, writer);
 				writer.flush();
+				System.out.println("Generator: " + fileName);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
@@ -211,6 +223,14 @@ public class GenUtils {
         if(template.contains("Dao.xml.vm")){
             return packagePath + "sqlmap" + File.separator + className + "Dao.xml";
         }
+        
+        if(template.contains("Mapper.java.vm")){
+        	return packagePath + "dao" + File.separator + className + "Mapper.java";
+        }
+        
+        if(template.contains("Mapper.xml.vm")){
+        	return packagePath + "sqlmap" + File.separator + className + "Mapper.xml";
+        }
 
         if(template.contains("Service.java.vm")){
             return packagePath + "service" + File.separator + className + "Service.java";
@@ -223,14 +243,17 @@ public class GenUtils {
         if(template.contains("Controller.java.vm")){
             return packagePath + "controller" + File.separator + className + "Controller.java";
         }
+        
+        if(template.contains("page.vue.vm")){
+        	return "webapp" + File.separator + "page" + File.separator + className + "Page.vue";
+        }
 
         if(template.contains("list.html.vm")){
-            return "main" + File.separator + "webapp" + File.separator + "WEB-INF" + File.separator + "page"
-                    + File.separator + className.toLowerCase() + ".html";
+            return "webapp" + File.separator + "page" + File.separator + className.toLowerCase() + ".html";
         }
 
         if(template.contains("list.js.vm")){
-            return "main" + File.separator + "webapp" + File.separator + "js" + File.separator + className.toLowerCase() + ".js";
+            return "webapp" + File.separator + "js" + File.separator + className.toLowerCase() + ".js";
         }
 
         if(template.contains("menu.sql.vm")){

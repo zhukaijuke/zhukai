@@ -17,7 +17,6 @@ import ${package}.utils.PageUtils;
 import ${package}.utils.Query;
 import ${package}.utils.R;
 
-
 /**
  * ${comments}
  * 
@@ -28,6 +27,7 @@ import ${package}.utils.R;
 @RestController
 @RequestMapping("${pathName}")
 public class ${className}Controller {
+
 	@Autowired
 	private ${className}Service ${classname}Service;
 	
@@ -40,11 +40,10 @@ public class ${className}Controller {
 		//查询列表数据
         Query query = new Query(params);
 
-		List<${className}Entity> ${classname}List = ${classname}Service.queryList(query);
+		List<${className}> ${classname}List = ${classname}Service.queryList(query);
 		int total = ${classname}Service.queryTotal(query);
 		
 		PageUtils pageUtil = new PageUtils(${classname}List, total, query.getLimit(), query.getPage());
-		
 		return R.ok().put("page", pageUtil);
 	}
 	
@@ -56,7 +55,6 @@ public class ${className}Controller {
 	@RequiresPermissions("${pathName}:info")
 	public R info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
 		${className}Entity ${classname} = ${classname}Service.queryObject(${pk.attrname});
-		
 		return R.ok().put("${classname}", ${classname});
 	}
 	
@@ -65,9 +63,8 @@ public class ${className}Controller {
 	 */
 	@RequestMapping("/save")
 	@RequiresPermissions("${pathName}:save")
-	public R save(@RequestBody ${className}Entity ${classname}){
+	public R save(@RequestBody ${className} ${classname}){
 		${classname}Service.save(${classname});
-		
 		return R.ok();
 	}
 	
@@ -76,9 +73,8 @@ public class ${className}Controller {
 	 */
 	@RequestMapping("/update")
 	@RequiresPermissions("${pathName}:update")
-	public R update(@RequestBody ${className}Entity ${classname}){
+	public R update(@RequestBody ${className} ${classname}){
 		${classname}Service.update(${classname});
-		
 		return R.ok();
 	}
 	
@@ -89,7 +85,6 @@ public class ${className}Controller {
 	@RequiresPermissions("${pathName}:delete")
 	public R delete(@RequestBody ${pk.attrType}[] ${pk.attrname}s){
 		${classname}Service.deleteBatch(${pk.attrname}s);
-		
 		return R.ok();
 	}
 	

@@ -1,12 +1,13 @@
-package ${package}.entity;
+package ${package}.dal.model;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
-
 #if(${hasBigDecimal})
 import java.math.BigDecimal;
 #end
-
+import java.util.Date;
 
 /**
  * ${comments}
@@ -15,26 +16,36 @@ import java.math.BigDecimal;
  * @email ${email}
  * @date ${datetime}
  */
-public class ${className}Entity implements Serializable {
-	private static final long serialVersionUID = 1L;
+@Column(name = "${tableName}")
+public class ${className} implements Serializable {
 	
 #foreach ($column in $columns)
-	//$column.comments
+	/**
+	 * $column.comments
+	 */
+#if($column.attrname == "id")
+	@Id
+#else
+	@Column(name = "$column.columnName")
+#end
 	private $column.attrType $column.attrname;
+	
 #end
 
 #foreach ($column in $columns)
 	/**
-	 * 设置：${column.comments}
+	 * 设置:${column.comments}
 	 */
 	public void set${column.attrName}($column.attrType $column.attrname) {
 		this.$column.attrname = $column.attrname;
 	}
+	
 	/**
-	 * 获取：${column.comments}
+	 * 获取:${column.comments}
 	 */
 	public $column.attrType get${column.attrName}() {
 		return $column.attrname;
 	}
+	
 #end
 }
