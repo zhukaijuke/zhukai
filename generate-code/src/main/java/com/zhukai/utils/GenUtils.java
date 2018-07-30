@@ -207,41 +207,41 @@ public class GenUtils {
      * 获取文件名
      */
     public static String getFileName(String template, String className, String packageName){
-        String packagePath = "";
+        /*String packagePath = "";
         if(StringUtils.isNotBlank(packageName)){
             packagePath += packageName.replace(".", File.separator) + File.separator;
-        }
+        }*/
 
         if(template.contains("Entity.java.vm")){
-            return packagePath + "entity" + File.separator + className + ".java";
+            return "code" + File.separator + "entity" + File.separator + className + ".java";
         }
 
         if(template.contains("Dao.java.vm")){
-            return packagePath + "dao" + File.separator + className + "Dao.java";
+            return "code" + File.separator + "dao" + File.separator + className + "Dao.java";
         }
 
         if(template.contains("Dao.xml.vm")){
-            return packagePath + "sqlmap" + File.separator + className + "Dao.xml";
+            return "code" + File.separator + "sqlmap" + File.separator + className + "Dao.xml";
         }
         
         if(template.contains("Mapper.java.vm")){
-        	return packagePath + "dao" + File.separator + className + "Mapper.java";
+        	return "code" + File.separator + "dao" + File.separator + className + "Mapper.java";
         }
         
         if(template.contains("Mapper.xml.vm")){
-        	return packagePath + "sqlmap" + File.separator + className + "Mapper.xml";
+        	return "code" + File.separator + "sqlmap" + File.separator + className + "Mapper.xml";
         }
 
         if(template.contains("Service.java.vm")){
-            return packagePath + "service" + File.separator + className + "Service.java";
+            return "code" + File.separator + "service" + File.separator + className + "Service.java";
         }
 
         if(template.contains("ServiceImpl.java.vm")){
-            return packagePath + "service" + File.separator + "impl" + File.separator + className + "ServiceImpl.java";
+            return "code" + File.separator + "service" + File.separator + "impl" + File.separator + className + "ServiceImpl.java";
         }
 
         if(template.contains("Controller.java.vm")){
-            return packagePath + "controller" + File.separator + className + "Controller.java";
+            return "code" + File.separator + "controller" + File.separator + className + "Controller.java";
         }
         
         if(template.contains("page.vue.vm")){
