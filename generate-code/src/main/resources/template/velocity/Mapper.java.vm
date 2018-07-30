@@ -1,0 +1,15 @@
+package ${package}.dal.mapper;
+
+import ${package}.dal.model.${className};
+import tk.mybatis.mapper.common.Mapper;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${className}Mapper extends Mapper<${className}> {
+	
+}
