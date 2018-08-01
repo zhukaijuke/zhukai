@@ -178,7 +178,7 @@ public class GenUtils {
         String rootPath = GenUtils.class.getClassLoader().getResource("").getFile() + "../../java_src/";
         for(String template : templates){
             //渲染模板
-        	  PrintWriter writer = null;
+        	PrintWriter writer = null;
             try {
                 // 新创建的文件目录
                 String fileName = getFileName(template, tableEntity.getClassName(), config.getString("package"));
@@ -188,14 +188,16 @@ public class GenUtils {
                 checkParentFileExists(file);
                 writer = new PrintWriter(file);
                 Template tpl = Velocity.getTemplate(template, "UTF-8");
-	              tpl.merge(context, writer);
+	            tpl.merge(context, writer);
                 writer.flush();
-                System.out.println("Generator: " + fileName);
+                System.out.println("Generator: java_src\\" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
+                throw new RuntimeException("渲染模板失败,表名:" + tableEntity.getTableName() + ", 模板:" + template, e);
             } finally {
-                writer.close();
+                if (writer != null) {
+                    writer.close();
+                }
             }
         }
     }
