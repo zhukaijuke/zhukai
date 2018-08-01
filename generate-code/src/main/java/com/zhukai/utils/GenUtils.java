@@ -44,8 +44,11 @@ import com.zhukai.entity.TableEntity;
  */
 public class GenUtils {
 
-    public static List<String> getTemplates(){
-        List<String> templates = new ArrayList<String>();
+    private static List<String> templates = null;
+    private static List<String> ignoreColumn = null;
+
+    static {
+        templates = new ArrayList<>();
         templates.add("template/velocity/Entity.java.vm");
         templates.add("template/velocity/Mapper.xml.vm");
         templates.add("template/velocity/Mapper.java.vm");
@@ -58,7 +61,26 @@ public class GenUtils {
         // templates.add("template/velocity/menu.sql.vm");
         // templates.add("template/velocity/Dao.java.vm");
         // templates.add("template/velocity/Dao.xml.vm");
+
+        ignoreColumn = new ArrayList<>();
+        ignoreColumn.add("id");
+        ignoreColumn.add("orgId");
+        ignoreColumn.add("ocId");
+        ignoreColumn.add("recordVersion");
+        ignoreColumn.add("createDate");
+        ignoreColumn.add("createUserCode");
+        ignoreColumn.add("createUserName");
+        ignoreColumn.add("lastUpdDate");
+        ignoreColumn.add("lastUpdUserCode");
+        ignoreColumn.add("lastUpdUserName");
+    }
+
+    public static List<String> getTemplates() {
         return templates;
+    }
+
+    public static List<String> getIgnoreColumn() {
+        return ignoreColumn;
     }
 
     /**
@@ -82,6 +104,7 @@ public class GenUtils {
         boolean hasStatus = false;
         //列信息
         List<ColumnEntity> columsList = new ArrayList<>();
+        List<ColumnEntity> extColumnList = new ArrayList<>();
         for(Map<String, String> column : columns){
             ColumnEntity columnEntity = new ColumnEntity();
             columnEntity.setColumnName(column.get("columnName"));
@@ -91,8 +114,9 @@ public class GenUtils {
 
             //列名转换成Java属性名
             String attrName = columnToJava(columnEntity.getColumnName());
+            String attrname = StringUtils.uncapitalize(attrName);
             columnEntity.setAttrName(attrName);
-            columnEntity.setAttrname(StringUtils.uncapitalize(attrName));
+            columnEntity.setAttrname(attrname);
 
             // 是否有status字段
             if ("status".equals(column.get("columnName"))) {
@@ -113,6 +137,10 @@ public class GenUtils {
             }
 
             columsList.add(columnEntity);
+
+            if (!getIgnoreColumn().contains(attrname)) {
+                extColumnList.add(columnEntity);
+            }
         }
         tableEntity.setColumns(columsList);
 
@@ -135,6 +163,7 @@ public class GenUtils {
         map.put("classname", tableEntity.getClassname());
         map.put("pathName", tableEntity.getClassname().toLowerCase());
         map.put("columns", tableEntity.getColumns());
+        map.put("extColumns", extColumnList);
         map.put("package", config.getString("package"));
         map.put("author", config.getString("author"));
         map.put("email", config.getString("email"));

@@ -8,17 +8,7 @@
           <el-form :model="queryCondition" ref="queryCondition" label-position="left">
 #set($rowCount=1)
 #set($flag=true)
-#foreach($column in $columns)
-#if($column.attrname != "id"
-    && $column.attrname != "orgId"
-    && $column.attrname != "ocId"
-    && $column.attrname != "recordVersion"
-    && $column.attrname != "createDate"
-    && $column.attrname != "createUserCode"
-    && $column.attrname != "createUserName"
-    && $column.attrname != "lastUpdDate"
-    && $column.attrname != "lastUpdUserCode"
-    && $column.attrname != "lastUpdUserName")
+#foreach($column in $extColumns)
 #if($rowCount % 4 == 1)
 
             <!-- 一行 -->
@@ -40,12 +30,11 @@
                 </el-form-item>
               </el-col>
 #end
-#if($rowCount != 1 && $rowCount % 4 == 0 && $velocityCount != $columns.size())
+#if($rowCount != 1 && $rowCount % 4 == 0 && $velocityCount != $extColumns.size())
             </el-row>
 #end
 #set($rowCount=$rowCount+1)
-#end
-#if($velocityCount == $columns.size())
+#if($velocityCount == $extColumns.size())
             </el-row>
 #end
 #end
@@ -103,8 +92,8 @@
 #if($column.attrname == "status")
           <el-table-column label="状态" width="100" prop="status" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
-                        <span :style='scope.row.status === "disabled" ? {color: "red"} : {color: "green"}'
-                              v-dictionary="{'dictType':'BaseStatus','dictValue':scope.row.status}"></span>
+              <span :style='scope.row.status === "disabled" ? {color: "red"} : {color: "green"}'
+                    v-dictionary="{'dictType':'BaseStatus','dictValue':scope.row.status}"></span>
             </template>
           </el-table-column>
 #elseif($column.attrType == "Date")
@@ -138,18 +127,9 @@
           <el-input v-model="${classname}Form.id"></el-input>
         </el-form-item>
 #set($dataCount=1)
-#foreach($column in $columns)
-#if($column.attrname != "id"
-&& $column.attrname != "orgId"
-&& $column.attrname != "ocId"
-&& $column.attrname != "recordVersion"
-&& $column.attrname != "createDate"
-&& $column.attrname != "createUserCode"
-&& $column.attrname != "createUserName"
-&& $column.attrname != "lastUpdDate"
-&& $column.attrname != "lastUpdUserCode"
-&& $column.attrname != "lastUpdUserName")
+#foreach($column in $extColumns)
 #if($dataCount % 2 == 1)
+        <!-- 一行 -->
         <el-row type="flex" class="row-bg">
 #end
 #if($column.attrname == "status")
@@ -168,12 +148,11 @@
             </el-form-item>
           </el-col>
 #end
-#if($dataCount != 1 && $dataCount % 2 == 0 && $velocityCount != $columns.size())
+#if($dataCount != 1 && $dataCount % 2 == 0 && $velocityCount != $extColumns.size())
         </el-row>
 #end
 #set($dataCount=$dataCount+1)
-#end
-#if($velocityCount == $columns.size())
+#if($velocityCount == $extColumns.size())
         </el-row>
 #end
 #end
@@ -213,7 +192,30 @@
         queryCondition: {},
         pageRequest: api.crud.getQueryCondition(),
         // 自定义校验规则
-        rules: {}
+        rules: {
+#foreach($column in $extColumns)
+#if($column.attrType == "Integer"
+    || $column.attrType == "Long"
+    || $column.attrType == "Float"
+    || $column.attrType == "BigDecimal"
+    || $column.attrType == "Double")
+          $column.attrname: [
+            { required: true, message: '请输入${column.comments}', trigger: 'blur' },
+            { type: 'number', message: '${column.comments}必须为数字值', trigger: 'blur' }
+          ]#if($velocityCount != $extColumns.size()),
+#else
+
+#end
+#else
+          $column.attrname: [
+            { required: true, message: '请输入${column.comments}', trigger: 'blur' }
+          ]#if($velocityCount != $extColumns.size()),
+#else
+
+#end
+#end
+#end
+        }
       }
     },
     created() {

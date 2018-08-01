@@ -19,7 +19,7 @@ import java.util.Map;
  * @date ${datetime}
  */
 @DubboService
-@ApiGroup(name = "${className}", owner = "${author}")
+@ApiGroup(name = "${classname}Service", owner = "${author}")
 public interface ${className}Service {
 
     @ApiOperation(desc = "根据条件查询", value = "findList", method = "get")
