@@ -51,9 +51,10 @@ public class GenUtils {
         templates.add("template/velocity/Mapper.java.vm");
         templates.add("template/velocity/Service.java.vm");
         templates.add("template/velocity/ServiceImpl.java.vm");
-        templates.add("template/velocity/list.html.vm");
-        templates.add("template/velocity/list.js.vm");
         templates.add("template/velocity/Controller.java.vm");
+        templates.add("template/velocity/page.vue.vm");
+        // templates.add("template/velocity/list.html.vm");
+        // templates.add("template/velocity/list.js.vm");
         // templates.add("template/velocity/menu.sql.vm");
         // templates.add("template/velocity/Dao.java.vm");
         // templates.add("template/velocity/Dao.xml.vm");
@@ -77,7 +78,8 @@ public class GenUtils {
         tableEntity.setClassname(StringUtils.uncapitalize(className));
 
         boolean hasBigDecimal = false;
-        boolean hasData = false;
+        boolean hasDate = false;
+        boolean hasStatus = false;
         //列信息
         List<ColumnEntity> columsList = new ArrayList<>();
         for(Map<String, String> column : columns){
@@ -92,14 +94,19 @@ public class GenUtils {
             columnEntity.setAttrName(attrName);
             columnEntity.setAttrname(StringUtils.uncapitalize(attrName));
 
+            // 是否有status字段
+            if ("status".equals(column.get("columnName"))) {
+                hasStatus = true;
+            }
+
             //列的数据类型，转换成Java类型
             String attrType = config.getString(columnEntity.getDataType(), "unknowType");
             columnEntity.setAttrType(attrType);
             if ("BigDecimal".equals(attrType)) {
-            	hasBigDecimal = true;
-			} else if ("Date".equals(attrType)) {
-				hasData = true;
-			}
+                hasBigDecimal = true;
+            } else if ("Date".equals(attrType)) {
+                hasDate = true;
+            }
             //是否主键
             if("PRI".equalsIgnoreCase(column.get("columnKey")) && tableEntity.getPk() == null){
                 tableEntity.setPk(columnEntity);
@@ -118,7 +125,7 @@ public class GenUtils {
         Properties prop = new Properties();
         prop.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         Velocity.init(prop);
-        
+
         //封装模板数据
         Map<String, Object> map = new HashMap<>();
         map.put("tableName", tableEntity.getTableName());
@@ -133,7 +140,8 @@ public class GenUtils {
         map.put("email", config.getString("email"));
         map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
         map.put("hasBigDecimal", hasBigDecimal);
-        map.put("hasData", hasData);
+        map.put("hasDate", hasDate);
+        map.put("hasStatus", hasStatus);
         VelocityContext context = new VelocityContext(map);
         // OutputStream out = null;
         //获取模板列表
@@ -141,25 +149,25 @@ public class GenUtils {
         String rootPath = GenUtils.class.getClassLoader().getResource("").getFile() + "../../java_src/";
         for(String template : templates){
             //渲染模板
-        	PrintWriter writer = null;
+        	  PrintWriter writer = null;
             try {
-            	// 新创建的文件目录
-            	String fileName = getFileName(template, tableEntity.getClassName(), config.getString("package"));
-            	String filePath = rootPath + fileName;
-            	File file = new File(filePath);
-            	// 检查文件目录是否存在, 不存在则创建
-            	checkParentFileExists(file);
-				writer = new PrintWriter(file);
-				Template tpl = Velocity.getTemplate(template, "UTF-8");
-	            tpl.merge(context, writer);
-				writer.flush();
-				System.out.println("Generator: " + fileName);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
-			} finally {
-				writer.close();
-			}
+                // 新创建的文件目录
+                String fileName = getFileName(template, tableEntity.getClassName(), config.getString("package"));
+                String filePath = rootPath + fileName;
+                File file = new File(filePath);
+                // 检查文件目录是否存在, 不存在则创建
+                checkParentFileExists(file);
+                writer = new PrintWriter(file);
+                Template tpl = Velocity.getTemplate(template, "UTF-8");
+	              tpl.merge(context, writer);
+                writer.flush();
+                System.out.println("Generator: " + fileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
+            } finally {
+                writer.close();
+            }
         }
     }
     
@@ -245,15 +253,15 @@ public class GenUtils {
         }
         
         if(template.contains("page.vue.vm")){
-        	return "webapp" + File.separator + "page" + File.separator + className + "Page.vue";
+        	return "webapp" + File.separator + "page" + File.separator + StringUtils.uncapitalize(className) + "Page.vue";
         }
 
         if(template.contains("list.html.vm")){
-            return "webapp" + File.separator + "page" + File.separator + className.toLowerCase() + ".html";
+            return "webapp" + File.separator + "page" + File.separator + StringUtils.uncapitalize(className) + ".html";
         }
 
         if(template.contains("list.js.vm")){
-            return "webapp" + File.separator + "js" + File.separator + className.toLowerCase() + ".js";
+            return "webapp" + File.separator + "js" + File.separator + StringUtils.uncapitalize(className) + ".js";
         }
 
         if(template.contains("menu.sql.vm")){

@@ -1,55 +1,111 @@
 package ${package}.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.PageHelper;
+import com.scm.common.entity.Page;
+import com.scm.common.exception.BusinessException;
+import com.scm.orm.util.ExampleCriteriaUtil;
+import com.scm.tms.sys.enumdata.BaseStatus;
+import ${package}.dal.mapper.${className}Mapper;
+import ${package}.dal.model.${className};
+import ${package}.service.${className}Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import ${package}.dao.${className}Dao;
-import ${package}.entity.${className};
-import ${package}.service.${className}Service;
-
-
-
-@Service("${classname}Service")
+@Service
 public class ${className}ServiceImpl implements ${className}Service {
+
 	@Autowired
-	private ${className}Dao ${classname}Dao;
-	
-	@Override
-	public ${className} queryObject(${pk.attrType} ${pk.attrname}){
-		return ${classname}Dao.queryObject(${pk.attrname});
-	}
-	
-	@Override
-	public List<${className}> queryList(Map<String, Object> map){
-		return ${classname}Dao.queryList(map);
-	}
-	
-	@Override
-	public int queryTotal(Map<String, Object> map){
-		return ${classname}Dao.queryTotal(map);
-	}
-	
-	@Override
-	public void save(${className} ${classname}){
-		${classname}Dao.save(${classname});
-	}
-	
-	@Override
-	public void update(${className} ${classname}){
-		${classname}Dao.update(${classname});
-	}
-	
-	@Override
-	public void delete(${pk.attrType} ${pk.attrname}){
-		${classname}Dao.delete(${pk.attrname});
-	}
-	
-	@Override
-	public void deleteBatch(${pk.attrType}[] ${pk.attrname}s){
-		${classname}Dao.deleteBatch(${pk.attrname}s);
-	}
+	private ${className}Mapper ${classname}Mapper;
+
+    /**
+     * 通用查询List
+     */
+    @Override
+    public List<${className}> findList(${className} ${classname}) {
+        return ${classname}Mapper.select(${classname});
+    }
+
+    @Override
+    public Page<${className}> findPage(Map<String, Object> paramMap, Page page) {
+        Example example = ExampleCriteriaUtil.getExampleCriteria(paramMap, ${className}.class);
+        PageHelper.startPage(page.getPageNo(), page.getPageSize());
+        List<${className}> list = ${classname}Mapper.selectByExample(example);
+        page.setData(list);
+        page.setTotal(((com.github.pagehelper.Page) list).getTotal());
+        return page;
+    }
+
+    /**
+     * 根据主键Id查询
+     */
+    @Override
+    public ${className} getById(${pk.attrType} ${pk.attrname}) {
+        return ${classname}Mapper.selectByPrimaryKey(${pk.attrname});
+    }
+
+    /**
+     * 保存或修改
+     */
+    @Override
+    @Transactional
+    public boolean saveOrUpdate(${className} ${classname}) {
+        int affectedNum;
+        if (${classname}.getId() != null) {
+            affectedNum = ${classname}Mapper.updateByPrimaryKeySelective(${classname});
+        } else {
+#if(${hasStatus})
+            ${classname}.setStatus(BaseStatus.active);
+#end
+            affectedNum = ${classname}Mapper.insertSelective(${classname});
+        }
+        return affectedNum > 0;
+    }
+
+#if(${hasStatus})
+    /**
+     * 根据id生效
+     */
+    @Override
+    @Transactional
+    public boolean activeStatusBatch(${pk.attrType}[] ${pk.attrname}s) {
+        return this.updateStatus(${pk.attrname}s, BaseStatus.active);
+    }
+
+    /**
+     * 根据id失效
+     */
+    @Override
+    @Transactional
+    public boolean disabledStatusBatch(${pk.attrType}[] ${pk.attrname}s) {
+        return this.updateStatus(${pk.attrname}s, BaseStatus.disabled);
+    }
+
+    private boolean updateStatus(${pk.attrType}[] ${pk.attrname}s, String status) {
+        if (ids == null || ${pk.attrname}s.length == 0) {
+            throw BusinessException.getInstance("参数${pk.attrname}s为空!");
+        }
+        // 查询条件
+        List<${pk.attrType}> ${pk.attrname}List = Arrays.asList(${pk.attrname}s);
+        Example example = new Example(${className}.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("${pk.attrname}", ${pk.attrname}List);
+        // 更新字段
+        ${className} ${classname} = new ${className}();
+        ${classname}.setStatus(status);
+        ${classname}.setLastUpdDate(new Date());
+        // TODO 修改人userCode 和 userName
+        // basVehicleType.setLastUpdUserCode();
+        // basVehicleType.setLastUpdUserName();
+        int affectedNum = ${classname}Mapper.updateByExampleSelective(${classname}, example);
+        return affectedNum > 0;
+    }
+#end
 	
 }

@@ -1,6 +1,12 @@
 package ${package}.service;
 
-import ${package}.entity.${className};
+import com.scm.common.entity.Page;
+import com.scm.gateway.annotation.dubbo.api.DubboMethod;
+import com.scm.gateway.annotation.dubbo.api.DubboService;
+import com.scm.gateway.annotation.http.api.ApiGroup;
+import com.scm.gateway.annotation.http.api.ApiOperation;
+import com.scm.gateway.annotation.http.api.ApiParam;
+import ${package}.dal.model.${className};
 
 import java.util.List;
 import java.util.Map;
@@ -12,19 +18,35 @@ import java.util.Map;
  * @email ${email}
  * @date ${datetime}
  */
+@DubboService
+@ApiGroup(name = "${className}", owner = "${author}")
 public interface ${className}Service {
-	
-	${className}Entity queryObject(${pk.attrType} ${pk.attrname});
-	
-	List<${className}> queryList(Map<String, Object> map);
-	
-	int queryTotal(Map<String, Object> map);
-	
-	void save(${className} ${classname});
-	
-	void update(${className} ${classname});
-	
-	void delete(${pk.attrType} ${pk.attrname});
-	
-	void deleteBatch(${pk.attrType}[] ${pk.attrname}s);
+
+    @ApiOperation(desc = "根据条件查询", value = "findList", method = "get")
+    @DubboMethod(timeOut = 10000)
+    List<${className}> findList(@ApiParam(desc = "查询条件", name = "${classname}", required = true) ${className} ${classname});
+
+    @ApiOperation(desc = "根据条件查询", value = "findPage", method = "get")
+    @DubboMethod(timeOut = 10000)
+    Page<${className}> findPage(@ApiParam(desc = "查询条件", name = "paramMap", required = true) Map<String, Object> paramMap,
+                                  @ApiParam(desc = "分页信息", name = "page", required = true) Page page);
+
+    @ApiOperation(desc = "根据id获取", value = "getById", method = "get")
+    @DubboMethod(timeOut = 5000)
+    ${className} getById(@ApiParam(desc = "主键Id", name = "id", required = true) ${pk.attrType} ${pk.attrname});
+
+    @ApiOperation(desc = "保存或更新", value = "saveOrUpdate", method = "get")
+    @DubboMethod(timeOut = 5000)
+    boolean saveOrUpdate(@ApiParam(desc = "保存实体", name = "${classname}", required = true) ${className} ${classname});
+
+#if(${hasStatus})
+    @ApiOperation(desc = "批量状态生效", value = "activeStatusBatch", method = "get")
+    @DubboMethod(timeOut = 5000)
+    boolean activeStatusBatch(@ApiParam(desc = "批量状态生效", name = "ids", required = true) ${pk.attrType}[] ${pk.attrname}s);
+
+    @ApiOperation(desc = "批量状态失效", value = "disabledStatusBatch", method = "get")
+    @DubboMethod(timeOut = 5000)
+    boolean disabledStatusBatch(@ApiParam(desc = "批量状态失效", name = "ids", required = true) ${pk.attrType}[] ${pk.attrname}s);
+#end
+
 }
