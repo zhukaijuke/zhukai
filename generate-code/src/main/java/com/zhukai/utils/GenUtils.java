@@ -40,7 +40,6 @@ import com.zhukai.entity.TableEntity;
 
 /**
  * 代码生成器   工具类
- *
  */
 public class GenUtils {
 
@@ -145,7 +144,7 @@ public class GenUtils {
         tableEntity.setColumns(columsList);
 
         //没主键，则第一个字段为主键
-        if(tableEntity.getPk() == null){
+        if (tableEntity.getPk() == null) {
             tableEntity.setPk(tableEntity.getColumns().get(0));
         }
 

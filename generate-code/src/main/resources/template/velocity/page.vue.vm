@@ -23,6 +23,12 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+#elseif($column.attrType == "Date")
+              <el-col :span="6">
+                <el-form-item class="c-query-input" label="${column.comments}" prop="${column.attrname}">
+                  <el-date-picker v-model="queryCondition.${column.attrname}" placeholder="选择日期时间" type="date" />
+                </el-form-item>
+              </el-col>
 #else
               <el-col :span="6">
                 <el-form-item class="c-query-input" label="${column.comments}" prop="${column.attrname}">
@@ -105,63 +111,83 @@
 #end
         </el-table>
       </div>
-    </div>
+      <!-- 分页 -->
+      <div class="block">
+        <el-pagination background
+                       @size-change="handleSizeChange"
+                       @current-change="handleCurrentChange"
+                       :current-page="pageRequest.pageNo"
+                       :page-sizes="[10, 20, 30, 50]"
+                       :page-size="pageRequest.pageSize"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="pageRequest.total">
+        </el-pagination>
+      </div>
 
-    <!-- 分页 -->
-    <div class="block">
-      <el-pagination background
-                     @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange"
-                     :current-page="pageRequest.pageNo"
-                     :page-sizes="[10, 20, 30, 50]"
-                     :page-size="pageRequest.pageSize"
-                     layout="total, sizes, prev, pager, next, jumper"
-                     :total="pageRequest.total">
-      </el-pagination>
-    </div>
-
-    <!-- 新增和查看修改模态框 -->
-    <el-dialog :title="editDialogTitle" :visible.sync="editDialogVisible">
-      <el-form :model="${classname}Form" status-icon label-width="120px" :rules="rules" ref="${classname}Form">
-        <el-form-item label="ID" prop="id" hidden>
-          <el-input v-model="${classname}Form.id"></el-input>
-        </el-form-item>
+      <!-- 新增和查看修改模态框 -->
+      <el-dialog :title="editDialogTitle" :visible.sync="editDialogVisible">
+        <el-form :model="${classname}Form" status-icon label-width="120px" :rules="rules" ref="${classname}Form">
+          <el-form-item label="ID" prop="id" hidden>
+            <el-input v-model="${classname}Form.id"></el-input>
+          </el-form-item>
 #set($dataCount=1)
 #foreach($column in $extColumns)
 #if($dataCount % 2 == 1)
-        <!-- 一行 -->
-        <el-row type="flex" class="row-bg">
+              <!-- 一行 -->
+            <el-row type="flex" class="row-bg">
 #end
 #if($column.attrname == "status")
-          <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="${classname}Form.status" clearable placeholder="请选择" style="width: 100%">
-                <el-option v-for="item in statusList" :label="item.displayValueCn" :value="item.dataCode"
-                           :key="item.dataCode"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+              <el-col :span="12">
+                <el-form-item label="状态" prop="status">
+                  <el-select v-model="${classname}Form.status" clearable placeholder="请选择" style="width: 100%">
+                    <el-option v-for="item in statusList" :label="item.displayValueCn" :value="item.dataCode"
+                               :key="item.dataCode"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+#elseif($column.attrType == "Date")
+              <el-col :span="12">
+                <el-form-item label="${column.comments}" prop="${column.attrname}">
+                  <el-date-picker
+                    v-model="${classname}Form.${column.attrname}"
+                    type="datetime"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    placeholder="选择日期时间">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+#elseif($column.attrType == "Integer"
+  || $column.attrType == "Long"
+  || $column.attrType == "Float"
+  || $column.attrType == "BigDecimal"
+  || $column.attrType == "Double")
+              <el-col :span="12">
+                <el-form-item label="${column.comments}" prop="${column.attrname}">
+                  <el-input v-model.number="${classname}Form.${column.attrname}"></el-input>
+                </el-form-item>
+              </el-col>
 #else
-          <el-col :span="12">
-            <el-form-item label="${column.comments}" prop="${column.attrname}">
-              <el-input v-model="${classname}Form.${column.attrname}"></el-input>
-            </el-form-item>
-          </el-col>
+              <el-col :span="12">
+                <el-form-item label="${column.comments}" prop="${column.attrname}">
+                  <el-input v-model="${classname}Form.${column.attrname}"></el-input>
+                </el-form-item>
+              </el-col>
 #end
 #if($dataCount != 1 && $dataCount % 2 == 0 && $velocityCount != $extColumns.size())
-        </el-row>
+            </el-row>
 #end
 #set($dataCount=$dataCount+1)
 #if($velocityCount == $extColumns.size())
-        </el-row>
+              </el-row>
 #end
 #end
-      </el-form>
-      <div slot="footer">
-        <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitSaveOrUpdate">确 定</el-button>
-      </div>
-    </el-dialog>
+        </el-form>
+        <div slot="footer">
+          <el-button @click="editDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submitSaveOrUpdate">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -352,15 +378,19 @@
             ids: ids
           },
           success: (response) => {
-            this.$message.success('修改成功!');
-            this.getList();
+            if (response) {
+              this.$message.success('修改成功!');
+              this.getList();
+            } else {
+              this.$message.error('出现异常了, 请重试或联系IT');
+            }
           }
         })
       },
       // 格式化时间
       formatDate(row, column, cellValue, index) {
         let date = new Date(cellValue);
-        return util.formatDate(date, 'yyyy-MM-dd hh:mm:ss');
+        return util.formatDate(date, 'yyyy-MM-dd HH:mm:ss');
       }
     }
   }

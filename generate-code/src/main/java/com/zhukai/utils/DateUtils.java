@@ -19,14 +19,16 @@ package com.zhukai.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 日期处理类
  *
- * @author 知秋
- * @email fei6751803@163.com
  */
 public class DateUtils {
+
+    private static Map<String, SimpleDateFormat> dateFormatMap = new HashMap<>();
 
     /** 时间格式(yyyy-MM-dd) */
     public final static String DATE_PATTERN = "yyyy-MM-dd";
@@ -38,10 +40,14 @@ public class DateUtils {
     }
 
     public static String format(Date date, String pattern) {
-        if(date != null){
-            SimpleDateFormat df = new SimpleDateFormat(pattern);
-            return df.format(date);
+        if (date == null) {
+            throw new NullPointerException();
         }
-        return null;
+        SimpleDateFormat df = dateFormatMap.get(pattern);
+        if (df == null) {
+            df = new SimpleDateFormat(pattern);
+            dateFormatMap.put(pattern, df);
+        }
+        return df.format(date);
     }
 }
