@@ -10,7 +10,7 @@ import com.zhukai.service.SysGeneratorService;
 @ContextConfiguration(locations = {"classpath*:spring.xml"})
 public class GenerateTest extends AbstractJUnit4SpringContextTests  {
 	
-	private String[] tableNames = { "bas_vehicle" };
+	private String[] tableNames = { "common_user" };
 	
 	@Autowired
 	private SysGeneratorService sysGeneratorService;

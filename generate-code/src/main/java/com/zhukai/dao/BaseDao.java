@@ -22,8 +22,6 @@ public interface BaseDao<T> {
 
 	T findById(Long id);
 
-	List<T> findListById(List<Long> ids);
-
 	List<T> findPageInfo(Map<String, Object> map);
 	
 	long countTotal(Map<String, Object> map);

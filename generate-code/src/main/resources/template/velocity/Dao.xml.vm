@@ -4,57 +4,89 @@
 <mapper namespace="${package}.dao.${className}Dao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="${package}.entity.${className}Entity" id="${classname}Map">
+    <resultMap type="${package}.entity.${className}" id="${classname}Map">
 #foreach($column in $columns)
-        <result property="${column.attrname}" column="${column.columnName}"/>
+#if(${column.dataType} == "datetime" || ${column.dataType} == "date")
+		<result property="${column.attrname}" column="${column.columnName}" jdbcType="TIMESTAMP" />
+#elseif(${column.dataType} == "int")
+		<result property="${column.attrname}" column="${column.columnName}" jdbcType="INTEGER" />
+#else
+		<result property="${column.attrname}" column="${column.columnName}" jdbcType="${column.dataType.toUpperCase()}" />
+#end
 #end
     </resultMap>
 
-	<select id="queryObject" resultType="${package}.entity.${className}Entity">
-		select * from ${tableName} where ${pk.columnName} = #{value}
-	</select>
+    <sql id="BaseColumn">
+#foreach($column in $columns)
+#if($velocityCount != $columns.size())
+		${column.columnName} as ${column.attrname},
+#else
+		${column.columnName} as ${column.attrname}
+#end
+#end
+    </sql>
 
-	<select id="queryList" resultType="${package}.entity.${className}Entity">
-		select * from ${tableName}
-        <choose>
-            <when test="sidx != null and sidx.trim() != ''">
-                order by ${sidx} ${order}
-            </when>
-			<otherwise>
-                order by ${pk.columnName} desc
-			</otherwise>
-        </choose>
-		<if test="offset != null and limit != null">
-			limit #{offset}, #{limit}
-		</if>
-	</select>
-	
- 	<select id="queryTotal" resultType="int">
-		select count(*) from ${tableName} 
-	</select>
-	 
-	<insert id="save" parameterType="${package}.entity.${className}Entity"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
-		insert into ${tableName}
-		(
+	<sql id="BasWhere">
+		<where>
+#foreach($column in $columns)
+#if($column.attrType == 'String')
+			<if test="${column.attrname} != null and ${column.attrname} != ''">
+				and ${column.columnName} = #{${column.attrname}}
+			</if>
+#else
+			<if test="${column.attrname} != null">
+				and ${column.columnName} = #{${column.attrname}}
+			</if>
+#end
+#end
+        </where>
+	</sql>
+
+    <insert id="save" parameterType="${package}.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+        insert into ${tableName}
+        (
 #foreach($column in $columns)
 #if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
 			`$column.columnName`#if($velocityCount != $columns.size()), #end
 
-#end			
 #end
-		)
-		values
-		(
+#end
+        )
+        values
+        (
 #foreach($column in $columns)
 #if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
 			#{$column.attrname}#if($velocityCount != $columns.size()), #end
 
-#end			
 #end
-		)
-	</insert>
-	 
-	<update id="update" parameterType="${package}.entity.${className}Entity">
+#end
+        )
+    </insert>
+
+    <insert id="saveBatch" parameterType="${package}.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+        insert into ${tableName}
+        (
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			`$column.columnName`#if($velocityCount != $columns.size()), #end
+
+#end
+#end
+        )
+        values
+        <foreach item="${classname}" collection="value" separator=",">
+        (
+#foreach($column in $columns)
+#if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
+			#{${classname}.$column.attrname}#if($velocityCount != $columns.size()), #end
+
+#end
+#end
+        )
+		</foreach>
+    </insert>
+
+	<update id="update" parameterType="${package}.entity.${className}">
 		update ${tableName} 
 		<set>
 #foreach($column in $columns)
@@ -76,5 +108,26 @@
 			#{${pk.attrname}}
 		</foreach>
 	</delete>
+
+    <select id="findById" resultMap="${classname}Map">
+        select
+		<include refid="BaseColumn"/>
+        from ${tableName} where ${pk.columnName} = #{value}
+    </select>
+
+    <select id="findPageInfo" resultMap="${classname}Map">
+        select
+		<include refid="BaseColumn"/>
+        from ${tableName}
+		<include refid="BasWhere"/>
+		<if test="orderColumn != null and order != null">
+            order by ${orderColumn} ${order}
+		</if>
+    </select>
+
+    <select id="countTotal" resultType="long">
+        select count(1) from ${tableName}
+        <include refid="BasWhere"/>
+    </select>
 
 </mapper>
