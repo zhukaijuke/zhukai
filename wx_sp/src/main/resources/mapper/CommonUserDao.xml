@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhukai.wx.dao.CommonUserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.zhukai.wx.entity.CommonUser" id="commonUserMap">
+    </resultMap>
+
+    <sql id="BaseColumn">
+		id as id,
+		login_name as loginName,
+		user_name as userName,
+		password as password,
+		email as email,
+		phone as phone,
+		create_time as createTime,
+		last_login_time as lastLoginTime,
+		last_modify_time as lastModifyTime,
+		life_cycle as lifeCycle,
+		remark as remark
+    </sql>
+
+	<sql id="BasWhere">
+		<where>
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="loginName != null and loginName != ''">
+				and login_name = #{loginName}
+			</if>
+			<if test="userName != null and userName != ''">
+				and user_name = #{userName}
+			</if>
+			<if test="password != null and password != ''">
+				and password = #{password}
+			</if>
+			<if test="email != null and email != ''">
+				and email = #{email}
+			</if>
+			<if test="phone != null and phone != ''">
+				and phone = #{phone}
+			</if>
+			<if test="createTime != null">
+				and create_time = #{createTime}
+			</if>
+			<if test="lastLoginTime != null">
+				and last_login_time = #{lastLoginTime}
+			</if>
+			<if test="lastModifyTime != null">
+				and last_modify_time = #{lastModifyTime}
+			</if>
+			<if test="lifeCycle != null">
+				and life_cycle = #{lifeCycle}
+			</if>
+			<if test="remark != null and remark != ''">
+				and remark = #{remark}
+			</if>
+        </where>
+	</sql>
+
+    <insert id="save" parameterType="com.zhukai.wx.entity.CommonUser" useGeneratedKeys="true" keyProperty="id">
+        insert into common_user
+        (
+			`login_name`, 
+			`user_name`, 
+			`password`, 
+			`email`, 
+			`phone`, 
+			`create_time`, 
+			`last_login_time`, 
+			`last_modify_time`, 
+			`life_cycle`, 
+			`remark`
+        )
+        values
+        (
+			#{loginName}, 
+			#{userName}, 
+			#{password}, 
+			#{email}, 
+			#{phone}, 
+			#{createTime}, 
+			#{lastLoginTime}, 
+			#{lastModifyTime}, 
+			#{lifeCycle}, 
+			#{remark}
+        )
+    </insert>
+
+    <insert id="saveBatch" parameterType="com.zhukai.wx.entity.CommonUser" useGeneratedKeys="true" keyProperty="id">
+        insert into common_user
+        (
+			`login_name`, 
+			`user_name`, 
+			`password`, 
+			`email`, 
+			`phone`, 
+			`create_time`, 
+			`last_login_time`, 
+			`last_modify_time`, 
+			`life_cycle`, 
+			`remark`
+        )
+        values
+        <foreach item="commonUser" collection="value" separator=",">
+        (
+			#{commonUser.loginName}, 
+			#{commonUser.userName}, 
+			#{commonUser.password}, 
+			#{commonUser.email}, 
+			#{commonUser.phone}, 
+			#{commonUser.createTime}, 
+			#{commonUser.lastLoginTime}, 
+			#{commonUser.lastModifyTime}, 
+			#{commonUser.lifeCycle}, 
+			#{commonUser.remark}
+        )
+		</foreach>
+    </insert>
+
+	<update id="update" parameterType="com.zhukai.wx.entity.CommonUser">
+		update common_user 
+		<set>
+			<if test="loginName != null">`login_name` = #{loginName}, </if>
+			<if test="userName != null">`user_name` = #{userName}, </if>
+			<if test="password != null">`password` = #{password}, </if>
+			<if test="email != null">`email` = #{email}, </if>
+			<if test="phone != null">`phone` = #{phone}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="lastLoginTime != null">`last_login_time` = #{lastLoginTime}, </if>
+			<if test="lastModifyTime != null">`last_modify_time` = #{lastModifyTime}, </if>
+			<if test="lifeCycle != null">`life_cycle` = #{lifeCycle}, </if>
+			<if test="remark != null">`remark` = #{remark}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from common_user where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from common_user where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+    <select id="findById" resultMap="commonUserMap">
+        select
+		<include refid="BaseColumn"/>
+        from common_user where id = #{value}
+    </select>
+
+    <select id="findPageInfo" resultMap="commonUserMap">
+        select
+		<include refid="BaseColumn"/>
+        from common_user
+		<include refid="BasWhere"/>
+		<if test="orderColumn != null and order != null">
+            order by ${orderColumn} ${order}
+		</if>
+    </select>
+
+    <select id="countTotal" resultType="long">
+        select count(1) from common_user
+        <include refid="BasWhere"/>
+    </select>
+
+</mapper>
