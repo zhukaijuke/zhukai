@@ -18,7 +18,7 @@ public interface BaseDao<T> {
 
 	int delete(Long id);
 
-	int deleteBatch(List<Long> ids);
+	int deleteBatch(List<Long> list);
 
 	T findById(Long id);
 

@@ -4,17 +4,7 @@
 <mapper namespace="${package}.dao.${className}Dao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="${package}.entity.${className}" id="${classname}Map">
-#foreach($column in $columns)
-#if(${column.dataType} == "datetime" || ${column.dataType} == "date")
-		<result property="${column.attrname}" column="${column.columnName}" jdbcType="TIMESTAMP" />
-#elseif(${column.dataType} == "int")
-		<result property="${column.attrname}" column="${column.columnName}" jdbcType="INTEGER" />
-#else
-		<result property="${column.attrname}" column="${column.columnName}" jdbcType="${column.dataType.toUpperCase()}" />
-#end
-#end
-    </resultMap>
+    <resultMap type="${package}.entity.${className}" id="${classname}Map" />
 
     <sql id="BaseColumn">
 #foreach($column in $columns)
@@ -74,7 +64,7 @@
 #end
         )
         values
-        <foreach item="${classname}" collection="value" separator=",">
+        <foreach item="${classname}" collection="list" separator=",">
         (
 #foreach($column in $columns)
 #if($column.columnName != $pk.columnName || $pk.extra != 'auto_increment')
@@ -104,7 +94,7 @@
 	
 	<delete id="deleteBatch">
 		delete from ${tableName} where ${pk.columnName} in 
-		<foreach item="${pk.attrname}" collection="array" open="(" separator="," close=")">
+		<foreach item="${pk.attrname}" collection="list" open="(" separator="," close=")">
 			#{${pk.attrname}}
 		</foreach>
 	</delete>

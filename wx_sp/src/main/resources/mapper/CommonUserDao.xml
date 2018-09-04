@@ -103,7 +103,7 @@
 			`remark`
         )
         values
-        <foreach item="commonUser" collection="value" separator=",">
+        <foreach item="commonUser" collection="list" separator=",">
         (
 			#{commonUser.loginName}, 
 			#{commonUser.userName}, 
@@ -129,9 +129,9 @@
 			<if test="phone != null">`phone` = #{phone}, </if>
 			<if test="createTime != null">`create_time` = #{createTime}, </if>
 			<if test="lastLoginTime != null">`last_login_time` = #{lastLoginTime}, </if>
-			<if test="lastModifyTime != null">`last_modify_time` = #{lastModifyTime}, </if>
 			<if test="lifeCycle != null">`life_cycle` = #{lifeCycle}, </if>
-			<if test="remark != null">`remark` = #{remark}</if>
+			<if test="remark != null">`remark` = #{remark},</if>
+			`last_modify_time` = now()
 		</set>
 		where id = #{id}
 	</update>
@@ -142,14 +142,14 @@
 	
 	<delete id="deleteBatch">
 		delete from common_user where id in 
-		<foreach item="id" collection="array" open="(" separator="," close=")">
+		<foreach item="id" collection="list" open="(" separator="," close=")">
 			#{id}
 		</foreach>
 	</delete>
 
     <select id="findById" resultMap="commonUserMap">
         select
-		<include refid="BaseColumn"/>
+        <include refid="BaseColumn"/>
         from common_user where id = #{value}
     </select>
 
