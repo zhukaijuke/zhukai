@@ -4,7 +4,7 @@
 <mapper namespace="${package}.dao.${className}Dao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="${package}.entity.${className}" id="${classname}Map" />
+    <resultMap type="${package}.model.${className}" id="${classname}Map" />
 
     <sql id="BaseColumn">
 #foreach($column in $columns)
@@ -32,7 +32,7 @@
         </where>
 	</sql>
 
-    <insert id="save" parameterType="${package}.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+    <insert id="save" parameterType="${package}.model.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
         insert into ${tableName}
         (
 #foreach($column in $columns)
@@ -53,7 +53,7 @@
         )
     </insert>
 
-    <insert id="saveBatch" parameterType="${package}.entity.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
+    <insert id="saveBatch" parameterType="${package}.model.${className}"#if($pk.extra == 'auto_increment') useGeneratedKeys="true" keyProperty="$pk.attrname"#end>
         insert into ${tableName}
         (
 #foreach($column in $columns)
@@ -76,7 +76,7 @@
 		</foreach>
     </insert>
 
-	<update id="update" parameterType="${package}.entity.${className}">
+	<update id="update" parameterType="${package}.model.${className}">
 		update ${tableName} 
 		<set>
 #foreach($column in $columns)

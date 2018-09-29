@@ -1,6 +1,8 @@
 package ${package}.dao;
 
 import ${package}.entity.${className};
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * ${comments}
@@ -9,6 +11,8 @@ import ${package}.entity.${className};
  * @email ${email}
  * @date ${datetime}
  */
+@Mapper
+@Repository
 public interface ${className}Dao extends BaseDao<${className}> {
 	
 }
