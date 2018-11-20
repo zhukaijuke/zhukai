@@ -19,4 +19,5 @@ public interface CommonUserService {
 
     boolean saveOrUpdate(CommonUser commonUser);
 
+    int updateTest2(String zhukai);
 }

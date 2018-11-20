@@ -2,6 +2,7 @@ package com.zhukai.wx.dao;
 
 import com.zhukai.wx.entity.CommonUser;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +15,8 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface CommonUserDao extends BaseDao<CommonUser> {
-	
+
+    int updateTest(@Param("id") Long id);
+
+    int updateTest2(@Param("loginName") String loginName);
 }

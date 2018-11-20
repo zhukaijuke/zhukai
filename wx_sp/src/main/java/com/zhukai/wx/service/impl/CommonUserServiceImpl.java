@@ -5,6 +5,7 @@ import com.zhukai.wx.entity.CommonUser;
 import com.zhukai.wx.service.CommonUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,5 +28,11 @@ public class CommonUserServiceImpl implements CommonUserService {
     @Override
     public boolean saveOrUpdate(CommonUser commonUser) {
         return false;
+    }
+
+    @Override
+    @Transactional
+    public int updateTest2(String zhukai) {
+        return commonUserDao.updateTest2(zhukai);
     }
 }

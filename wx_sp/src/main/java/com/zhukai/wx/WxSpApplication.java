@@ -14,15 +14,7 @@ public class WxSpApplication {
     private static final Double PK = 180 / PI;
 
     public static void main(String[] args) {
-        // SpringApplication.run(WxSpApplication.class, args);
-        Map<String, Double> pointA = new HashMap<>();
-        pointA.put("lng", 114.25051);
-        pointA.put("lat", 30.569475);
-        Map<String, Double> pointB = new HashMap<>();
-        pointB.put("lng", 114.250763);
-        pointB.put("lat", 30.5704);
-        System.out.println(getDistanceFromTwoPoints(pointA, pointB));
-        System.out.println(isInCircle(4000.0, 30.569475, 114.25051, 30.5704, 114.250763));
+        SpringApplication.run(WxSpApplication.class, args);
     }
 
     private static Double getDistanceFromTwoPoints(Map pointA, Map pointB) {

@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Demo</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+    	var isPrintUnRun = false;
+function printerUnRun() {
+    setTimeout(function () {
+        $Alert("未启动打印服务!");
+    }, 500);
+    isPrintUnRun = true;
+}    	
+    	</script>
+    <script src="http://localhost:1000/script" onerror="printerUnRun()"></script>
+    <style>
+        .goods, .goods li {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+            .goods li {
+                padding-right: 5px;
+                display: block;
+                white-space: nowrap;
+            }
+
+                .goods li span {
+                    float: right;
+                    background: #FFF;
+                    padding-left: 10px;
+                    display: block;
+                    width: 30px;
+                    position: relative;
+                }
+    </style>
+</head>
+<body>
+<iframe id="logisticsHtml" src="/user/print"></iframe>
+<div>
+	本机HddSerialNumber:<span id="hddSerialNumber"></span>
+	</div>
+	<textarea>
+	asd
+		</textarea>
+		<br/>
+        <span>物流单打印机<select id="logisticsPrinter" onchange="setLogisticsPrinter(this.value)"></select></span>
+        <input type="button" onclick="printLogistics()" value="打印物流单" />
+        
+        
+		<br/>
+	<textarea id="shippingHtml" style="width:500px;height:200px;"></textarea>
+		<br/>
+        <span>发货单打印机<select id="shippingPrinter" onchange="setPrinter()"></select></span>
+        <input type="button" onclick="printShippingList()" value="打印发货单" />
+    <script>
+    	$("#hddSerialNumber").html(HddSerialNumber);
+    	
+    	
+
+        function printers(ps) {
+            if(ps != null && ps.length>0)
+            {
+                for(var i=0;i<ps.length;i++)
+                {
+                    AddOption("#logisticsPrinter",ps[i],ps[i]);
+                    AddOption("#shippingPrinter",ps[i],ps[i]);
+                }
+            }
+        }
+        
+function AddOption(obj, key, val, selval) {
+    var newOption = document.createElement("OPTION");
+    newOption.text = val;
+    newOption.value = key;
+    if (selval && selval == key)
+        newOption.selected = true;
+    $(obj)[0].options.add(newOption);
+}
+function setLogisticsPrinter(printer)
+{
+	alert("可以用HddSerialNumber和打印机名称"+printer+"绑定到后台登记")
+}
+function setPrinter(printer)
+{
+	alert("可以用HddSerialNumber和打印机名称"+printer+"绑定到后台登记")
+}
+
+function printHtml(html,printer,title) {
+		if (isPrintUnRun) {
+        alert("请先启动打印服务!");
+        return;
+    }
+    var hp = new HtmlPrinter();
+        hp.Print(html, 1270, 500,printer,title, function(sts) {
+        if (sts == true) {
+        	alert("打印成功");
+        } else {
+            alert(sts);
+        }
+    });
+}
+
+function printLogistics()
+{
+	var html = document.getElementById("logisticsHtml").contentWindow.document.documentElement.innerHTML;
+	printHtml(html,$("#logisticsPrinter").val(),"物流单");
+}
+function printShippingList()
+{
+	printHtml($("#shippingHtml").val(),$("#shippingPrinter").val(),"发货单");
+}
+
+    	</script>
+    <script src="http://localhost:1000/printer"></script>
+</body>
+</html>

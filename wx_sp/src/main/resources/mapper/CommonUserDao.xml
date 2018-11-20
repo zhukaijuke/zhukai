@@ -168,4 +168,11 @@
         <include refid="BasWhere"/>
     </select>
 
+    <update id="updateTest">
+        update common_user set life_cycle = life_cycle + 1 where id = #{id}
+    </update>
+
+    <update id="updateTest2">
+        update common_user set life_cycle = life_cycle + 1 where login_name = #{loginName}
+    </update>
 </mapper>
