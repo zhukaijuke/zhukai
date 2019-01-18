@@ -12,7 +12,7 @@ import java.util.Date;
 @ContextConfiguration(locations = {"classpath*:spring.xml"})
 public class GenerateTest extends AbstractJUnit4SpringContextTests  {
 	
-	private String[] tableNames = { "bas_store" };
+	private String[] tableNames = { "inventory_adjustment_detail" };
 	
 	@Autowired
 	private SysGeneratorService sysGeneratorService;

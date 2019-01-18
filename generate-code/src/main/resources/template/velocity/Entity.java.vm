@@ -1,4 +1,4 @@
-package ${package}.model;
+package ${package}.domain;
 
 import java.io.Serializable;
 #if(${hasBigDecimal})
@@ -7,20 +7,30 @@ import java.math.BigDecimal;
 #if(${hasDate})
 import java.util.Date;
 #end
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
 
 /**
  * ${comments}
  * 
  * @author ${author}
- * @email ${email}
  * @date ${datetime}
  */
 public class ${className} implements Serializable {
-	
+
 #foreach ($column in $columns)
 	/**
 	 * $column.comments
 	 */
+#if (${column.columnName} == "id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+#elseif (${column.columnName.indexOf("_")} != -1)
+    @Column(name = "$column.columnName")
+#end
 	private $column.attrType $column.attrname;
 	
 #end

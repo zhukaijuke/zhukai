@@ -49,17 +49,17 @@ public class GenUtils {
     static {
         templates = new ArrayList<>();
         templates.add("template/velocity/Entity.java.vm");
-        // templates.add("template/velocity/Mapper.xml.vm");
+        templates.add("template/velocity/Mapper.xml.vm");
         // templates.add("template/velocity/Mapper.java.vm");
-        templates.add("template/velocity/Service.java.vm");
-        templates.add("template/velocity/ServiceImpl.java.vm");
-        templates.add("template/velocity/Controller.java.vm");
-        templates.add("template/velocity/page.vue.vm");
+        // templates.add("template/velocity/Service.java.vm");
+        // templates.add("template/velocity/ServiceImpl.java.vm");
+        // templates.add("template/velocity/Controller.java.vm");
+        // templates.add("template/velocity/page.vue.vm");
         // templates.add("template/velocity/list.html.vm");
         // templates.add("template/velocity/list.js.vm");
         // templates.add("template/velocity/menu.sql.vm");
-        templates.add("template/velocity/Dao.java.vm");
-        templates.add("template/velocity/Dao.xml.vm");
+        // templates.add("template/velocity/Dao.java.vm");
+        // templates.add("template/velocity/Dao.xml.vm");
 
         ignoreColumn = new ArrayList<>();
         ignoreColumn.add("id");
@@ -124,6 +124,15 @@ public class GenUtils {
 
             //列的数据类型，转换成Java类型
             String attrType = config.getString(columnEntity.getDataType(), "unknowType");
+            if ("tinyint".equals(columnEntity.getDataType())) {
+                char a = column.get("columnType").charAt(8);
+                if (a == '1') {
+                    attrType = "Boolean";
+                } else {
+                    attrType = "Integer";
+                }
+            }
+
             columnEntity.setAttrType(attrType);
             if ("BigDecimal".equals(attrType)) {
                 hasBigDecimal = true;

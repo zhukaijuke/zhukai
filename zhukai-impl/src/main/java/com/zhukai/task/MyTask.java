@@ -13,9 +13,11 @@ public class MyTask implements SimpleJob {
 
     private static final Logger log = LoggerFactory.getLogger(MyTask.class);
 
+    private static int runCount = 1;
+
     @Override
     public void execute(ShardingContext context) {
-        log.info("" + context);
+        log.info("运行次数" + runCount + ", " + context);
         switch (context.getShardingItem()) {
             case 0:
                 log.info(context.getShardingParameter());
@@ -28,6 +30,7 @@ public class MyTask implements SimpleJob {
                 break;
             // case n: ...
         }
+        runCount++;
     }
 
 }

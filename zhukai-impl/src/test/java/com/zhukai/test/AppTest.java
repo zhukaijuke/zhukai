@@ -8,6 +8,10 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import com.zhukai.manager.UserManager;
 import com.zhukai.model.User;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Unit test for simple App.
  */
@@ -26,4 +30,8 @@ public class AppTest extends AbstractJUnit4SpringContextTests {
 		System.out.println(user.getCreateTime());
 		System.out.println(user.getRemark());
 	}
+
+    public static void main(String[] args) {
+        List<String> list;
+    }
 }

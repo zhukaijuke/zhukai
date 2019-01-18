@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,8 +32,6 @@ public class CommonUserController {
         return "index";
     }
 
-    String jasperFilePath = "C:/Users/lenovo/Desktop/report1.jasper";
-
     @RequestMapping("/test")
     public String test(Model model) {
         return "demo";
@@ -40,6 +39,7 @@ public class CommonUserController {
 
     @RequestMapping("/print")
     public void print(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jasperFilePath = "C:/Users/lenovo/Desktop/report1.jasper";
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/pdf");
 
@@ -49,6 +49,16 @@ public class CommonUserController {
         out.write(bytes);
         out.flush();
         out.close();
+    }
+
+    @RequestMapping("/testParam")
+    @ResponseBody
+    public String testParam(Long skuId, String skuName, int skuQty, Boolean flag) {
+        System.out.println(skuId);
+        System.out.println(skuName);
+        System.out.println(skuQty);
+        System.out.println(flag);
+        return skuId + "-" + skuName + "-" + skuQty + "-" + flag;
     }
 
 }
